@@ -1,7 +1,10 @@
 # serviceWoker
 
 >Service workers 本质上充当Web应用程序与浏览器之间的代理服务器，也可以在网络可用时作为浏览器和网络间的代理。它们旨在（除其他之外）使得能够创建有效的离线体验，拦截网络请求并基于网络是否可用以及更新的资源是否驻留在服务器上来采取适当的动作。他们还允许访问推送通知和后台同步API。
-[浏览器兼容性](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%85%BC%E5%AE%B9%E6%80%A7)
+**浏览器兼容性**
+
++ [浏览器兼容性](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%85%BC%E5%AE%B9%E6%80%A7)
++ [ is Serviceworker ready](https://jakearchibald.github.io/isserviceworkerready/)
 
 [使用前的设置](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API/Using_Service_Workers#%E4%BD%BF%E7%94%A8%E5%89%8D%E7%9A%84%E8%AE%BE%E7%BD%AE)
 

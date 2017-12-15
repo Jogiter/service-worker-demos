@@ -1,4 +1,4 @@
-var CACHE_VERSION = 4;
+var CACHE_VERSION = 1;
 var CACHE = 'cache-v' + CACHE_VERSION;
 self.addEventListener('install', function(event) {
     console.log('The service worker is being installed.');
@@ -31,14 +31,15 @@ self.addEventListener('fetch', function(event) {
 function precache() {
     return caches.open(CACHE).then(function(cache) {
         return cache.addAll([
+            './',
+            './index.html',
             './controlled.html',
             './non-controlled.html',
             './index.js',
             '../images/',
             '../images/fdr.jpg',
             '../images/lm.jpg',
-            '../images/qmsht.jpg',
-            'https://serviceworke.rs/strategy-network-or-cache/asset'
+            '../images/qmsht.jpg'
         ]);
     });
 }
