@@ -43,3 +43,4 @@
 + [ServiceWorker-MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/ServiceWorker#方法)
 + [serviceworke](https://serviceworke.rs/strategy-cache-only_service-worker_doc.html)
 + [Service Worker Recipes - GitHub Pages](https://googlechrome.github.io/samples/service-worker/)
++ [chrome://serviceworker-internals/](chrome://serviceworker-internals/)

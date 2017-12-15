@@ -1,30 +1,30 @@
-var CACHE_VERSION = 1;
+var CACHE_VERSION = 4;
 var CACHE = 'cache-v' + CACHE_VERSION;
-
 self.addEventListener('install', function(event) {
     console.log('The service worker is being installed.');
+    // add to caches
+    event.waitUntil(precache());
+});
 
+self.addEventListener('activate', function(event) {
     // delete old caches
     event.waitUntil(
         caches.keys().then(function(cacheNames) {
             return Promise.all(
                 cacheNames.map(function(cacheName) {
                     if (CACHE != cacheName) {
-                        console.log('Deleting out of date cache:', cacheName);
+                        console.log('[activate] Deleting out of date cache:', cacheName);
                         return caches.delete(cacheName);
                     }
                 })
             );
         })
     );
-
-    // add to caches
-    event.waitUntil(precache());
 });
+
 self.addEventListener('fetch', function(event) {
-    console.log('The service worker is serving the asset.');
-    event.respondWith(fromNetwork(event.request, 400).catch(function() {
-        return fromCache(event.request);
+    event.respondWith(fromCache(event.request).catch(function() {
+        return fromNetwork(event.request, 400);
     }));
 });
 
@@ -32,6 +32,12 @@ function precache() {
     return caches.open(CACHE).then(function(cache) {
         return cache.addAll([
             './controlled.html',
+            './non-controlled.html',
+            './index.js',
+            '../images/',
+            '../images/fdr.jpg',
+            '../images/lm.jpg',
+            '../images/qmsht.jpg',
             'https://serviceworke.rs/strategy-network-or-cache/asset'
         ]);
     });
@@ -42,6 +48,7 @@ function fromNetwork(request, timeout) {
         var timeoutId = setTimeout(reject, timeout);
         fetch(request).then(function(response) {
             clearTimeout(timeoutId);
+            console.log('[fetch] Returning from server: ' + request);
             fulfill(response);
         }, reject);
     });
@@ -50,7 +57,11 @@ function fromNetwork(request, timeout) {
 function fromCache(request) {
     return caches.open(CACHE).then(function(cache) {
         return cache.match(request).then(function(matching) {
-            return matching || Promise.reject('no-match');
+            if (matching) {
+                console.log('[fetch] Returning from ServiceWorker cache: ' + request);
+                return matching;
+            }
+            return Promise.reject('no-match');
         });
     });
 }
