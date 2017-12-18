@@ -39,6 +39,48 @@
 - (file, *, —)
 - (chrome-extension, *, —)
 
+## 如何更新缓存文件
+
+```javascript
+function fromNetwork(request, timeout) {
+    return new Promise(function(fulfill, reject) {
+        var timeoutId = setTimeout(reject, timeout);
+        fetch(request).then(function(response) {
+            return caches.open(CACHE).then(function(cache) {
+                return cache.put(request, response.clone()).then(function() {
+                    clearTimeout(timeoutId);
+                    console.log('[fetch] Returning from server: ' + request.url);
+                    return fulfill(response);
+                })
+            })
+        }, reject);
+    });
+}
+
+function fromCache(request) {
+    return caches.open(CACHE).then(function(cache) {
+        return cache.match(request).then(function(matching) {
+            if (matching) {
+                console.log('[fetch] Returning from ServiceWorker cache: ' + request.url);
+                return matching;
+            }
+            return Promise.reject('no-match');
+        });
+    });
+}
+
+// On fetch, use cache but update the entry with the latest contents from the server.
+self.addEventListener('fetch', function(event) {
+    // fetch from the cache, once intalled, there is nothing in the cache, then fetch from network
+    event.respondWith(fromCache(event.request).catch(function() {
+        return fromNetwork(event.request, 400);
+    }));
+
+    // update request with the new response
+    event.waitUntil(fromNetwork(event.request, 400).then(refresh));
+});
+```
+
 
 ## read-links
 
