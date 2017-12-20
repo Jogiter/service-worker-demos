@@ -1,7 +1,7 @@
 var endpoint;
 var key;
 var authSecret;
-navigator.serviceWorker.register('service-worker.js')
+navigator.serviceWorker.register('./service-worker.js')
     .then(function(registration) {
         return registration.pushManager.getSubscription()
             .then(function(subscription) {
@@ -15,12 +15,10 @@ navigator.serviceWorker.register('service-worker.js')
     }).then(function(subscription) {
         var rawKey = subscription.getKey ? subscription.getKey('p256dh') : '';
         key = rawKey ?
-            btoa(String.fromCharCode.apply(null, new Uint8Array(rawKey))) :
-            '';
+            btoa(String.fromCharCode.apply(null, new Uint8Array(rawKey))) : '';
         var rawAuthSecret = subscription.getKey ? subscription.getKey('auth') : '';
         authSecret = rawAuthSecret ?
-            btoa(String.fromCharCode.apply(null, new Uint8Array(rawAuthSecret))) :
-            '';
+            btoa(String.fromCharCode.apply(null, new Uint8Array(rawAuthSecret))) : '';
 
         endpoint = subscription.endpoint;
         fetch('https://serviceworke.rs/push-payload/register', {
