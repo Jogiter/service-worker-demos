@@ -6,7 +6,15 @@
 + [浏览器兼容性](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%85%BC%E5%AE%B9%E6%80%A7)
 + [ is Serviceworker ready](https://jakearchibald.github.io/isserviceworkerready/)
 
-[使用前的设置](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API/Using_Service_Workers#%E4%BD%BF%E7%94%A8%E5%89%8D%E7%9A%84%E8%AE%BE%E7%BD%AE)
+## [使用前的设置](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API/Using_Service_Workers#%E4%BD%BF%E7%94%A8%E5%89%8D%E7%9A%84%E8%AE%BE%E7%BD%AE)
+
+在已经支持 serivce workers 的浏览器的版本中，很多特性没有默认开启。如果你发现示例代码在代当前版本的浏览器中怎么样都无法正常运行，你可能需要开启一下浏览器的相关配置：
+
++ Firefox Nightly: 访问 about:config 并设置 dom.serviceWorkers.enabled 的值为 true; 重启浏览器；
++ Chrome Canary: 访问 chrome://flags 并开启 experimental-web-platform-features; 重启浏览器 (注意：有些特性在Chrome中没有默认开放支持)；
++ Opera: 访问 opera://flags 并开启 ServiceWorker 的支持; 重启浏览器。 
+
+另外，你需要通过 `HTTPS` 来访问你的页面 — 出于安全原因，`Service Workers` 要求必须在 HTTPS 下才能运行。`Github` 是个用来测试的好地方，因为它就支持 `HTTPS`。为了便于本地开发，`localhost` 也被浏览器认为是安全源。
 
 ## Service workers使用场景
 
