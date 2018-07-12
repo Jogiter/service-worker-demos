@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>network-or-cache</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+    <h2>Network or cache</h2>
+    <p>Try to adjust <a href="https://developers.google.com/web/tools/chrome-devtools/network-performance/network-conditions">network throttling</a> to GPRS to see the image falling back to the cached content.</p>
+    <div class="comparision">
+        <iframe src="./controlled.html" allowfullscreen frameborder="0" id="reference"></iframe>
+        <iframe src="./non-controlled.html" allowfullscreen frameborder="0" id="sample"></iframe>
+    </div>
+    <button id="reload">reload</button>
+<body>
+    <script src="index.js"></script>
+</body>
+
+</html>

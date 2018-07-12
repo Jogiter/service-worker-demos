@@ -1,0 +1,42 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+body {
+  padding: 2vw;
+}
+.comparision {
+    display: -webkit-flex;
+    display: -ms-flex;
+    display: flex;
+    justify-content: space-between;
+}
+iframe {
+    display: block;
+    width: 49%;
+    height: 700px;
+    border: 1px solid;
+    margin-top: 2vw;
+}
+#reload {
+    width: 100%;
+    border: none;
+    background-color: #279cd7;
+    color: #fff;
+    padding: 1em;
+    margin-top: 2vw;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .comparision {
+    display: block;
+  }
+  iframe {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 700px;
+    border: 1px solid;
+  }
+}

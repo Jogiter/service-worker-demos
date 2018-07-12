@@ -89,13 +89,76 @@ self.addEventListener('fetch', function(event) {
 });
 ```
 
+## 动态更新缓存
+
+[demo](https://googlechrome.github.io/samples/service-worker/window-caches/index.html)
+
+```js
+var CACHE_NAME = 'window-cache-v1';
+
+// This uses window.fetch() (https://developers.google.com/web/updates/2015/03/introduction-to-fetch)
+// to retrieve a Response from the network, and store it in the named cache.
+// In some cases, cache.add() can be used instead of the fetch()/cache.put(),
+// but only if we know that the resource we're fetching supports CORS.
+// cache.add() will fail when the response status isn't 200, and when CORS isn't
+// supported, the response status is always 0.
+// (See https://github.com/w3c/ServiceWorker/issues/823).
+function addUrlToCache(url) {
+  window.fetch(url, {mode: 'no-cors'}).then(function(response) {
+    caches.open(CACHE_NAME).then(function(cache) {
+      cache.put(url, response).then(showList);
+    });
+  }).catch(function(error) {
+    ChromeSamples.setStatus(error);
+  });
+}
+
+function showCacheList() {
+  // All the Cache Storage API methods return Promises. If you're not familiar
+  // with them, see http://www.html5rocks.com/en/tutorials/es6/promises/
+  // Here, we're iterating over all the available caches, and for each cache,
+  // iterating over all the entries, adding each to the list.
+  window.caches.keys().then(function(cacheNames) {
+    cacheNames.forEach(function(cacheName) {
+      window.caches.open(cacheName).then(function(cache) {
+        return cache.keys();
+      }).then(function(requests) {
+        requests.forEach(function(request) {
+          addRequestToList(cacheName, request);
+        });
+      });
+    });
+  });
+}
+
+// Given a cache name and URL, removes the cached entry.
+function removeCache(cacheName, url) {
+  return window.caches.open(cacheName).then(function(cache) {
+    return cache.delete(url);
+  });
+}
+```
+
+
+## [Fill an area with an Iframe 100%](https://stackoverflow.com/questions/26436399/bootstrap-3-fill-an-area-with-an-iframe-100)
+
+```html
+<style>
+iframe {
+  width: 100%;
+}
+</style>
+<iframe src="" frameborder="0" allowfullscreen></iframe>
+```
 
 ## read-links
 
-+ [Service Worker 入门](https://www.w3ctech.com/topic/866)
++ [Service Worker 简介](https://developers.google.com/web/fundamentals/primers/service-workers/)
 + [ServiceWorker-MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/ServiceWorker#方法)
++ tool: chrome 中访问 `chrome://serviceworker-internals/`
 + [serviceworke](https://serviceworke.rs/strategy-cache-only_service-worker_doc.html)
-+ [Service Worker Recipes - GitHub Pages](https://googlechrome.github.io/samples/service-worker/)
-+ [chrome://serviceworker-internals/](chrome://serviceworker-internals/)
-+ [向网络应用添加推送通知](https://developers.google.com/web/fundamentals/codelabs/push-notifications/?hl=zh-cn#top_of_page)
-+ [Google service-worker samples](https://github.com/GoogleChrome/samples/tree/gh-pages/service-worker)
++ [Google service-worker samples](https://github.com/GoogleChrome/samples/tree/gh-pages/service-worker). view [samples ](https://googlechrome.github.io/samples/service-worker/)
++ [deanhume:progressive-web-apps-book](https://github.com/deanhume/progressive-web-apps-book)
++ [serviceworker-cookbook](https://github.com/mozilla/serviceworker-cookbook)
++ [your-first-pwapp](https://codelabs.developers.google.com/codelabs/your-first-pwapp)
++ [push-notifications](https://developers.google.com/web/fundamentals/codelabs/push-notifications/)

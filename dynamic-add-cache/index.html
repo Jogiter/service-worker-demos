@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>dynamic add cache</title>
+  <style>
+    pre {
+      border: 1px solid #ccc;
+      background-color: #eee;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>window.caches Sample</h2>
+  <p>本示例演示了如何使用在普通文档的上下文中对<a href="https://slightlyoff.github.io/ServiceWorker/spec/service_worker/#cache-storage">Cache Storage API0</a>进行调用</p>
+  <section>
+    <<div id="output" class="output">
+      <div id="content">
+        <div id="files">
+          <p>
+            The resources currently in the cache are listed below. Some initial files have been added via the service worker's install handler. You can add additional files to the cache or remove files from the context of the current page, without having to pass
+            messages back and forth to the service worker.
+          </p>
+
+          <ul id="cache-entries"></ul>
+
+          <div>
+            <label for="url">URL to Cache:</label>
+            <input type="text" id="url" size="60" value="https://www.google.com">
+            <button id="add">Add</button>
+          </div>
+        </div>
+      </div>
+      <div id="status"></div>
+      <pre id="log"></pre>
+      </div>
+  </section>
+  <script>
+    var CACHE_NAME = 'dynamic-cache-v1';
+    var cacheEntriesUl = document.querySelector('#cache-entries');
+
+    function setStatus(status) {
+      document.querySelector('#status').textContent = status;
+    }
+
+    function initializeUI() {
+      document.querySelector('#files').style.display = 'block';
+
+      document.querySelector('#add').addEventListener('click', function() {
+        var url = document.querySelector('#url').value;
+        if (url) {
+          addUrlToCache(url);
+        }
+      });
+
+      showList();
+    }
+
+    function showList() {
+      // Clear out any previous entries, in case this is being called after adding a
+      // new entry to the cache.
+      while (cacheEntriesUl.firstChild) {
+        cacheEntriesUl.removeChild(cacheEntriesUl.firstChild);
+      }
+
+      // All the Cache Storage API methods return Promises. If you're not familiar
+      // with them, see http://www.html5rocks.com/en/tutorials/es6/promises/
+      // Here, we're iterating over all the available caches, and for each cache,
+      // iterating over all the entries, adding each to the list.
+      window.caches.keys().then(function(cacheNames) {
+        cacheNames.forEach(function(cacheName) {
+          window.caches.open(cacheName).then(function(cache) {
+            return cache.keys();
+          }).then(function(requests) {
+            requests.forEach(function(request) {
+              addRequestToList(cacheName, request);
+            });
+          });
+        });
+      });
+    }
+
+    // This uses window.fetch() (https://developers.google.com/web/updates/2015/03/introduction-to-fetch)
+    // to retrieve a Response from the network, and store it in the named cache.
+    // In some cases, cache.add() can be used instead of the fetch()/cache.put(),
+    // but only if we know that the resource we're fetching supports CORS.
+    // cache.add() will fail when the response status isn't 200, and when CORS isn't
+    // supported, the response status is always 0.
+    // (See https://github.com/w3c/ServiceWorker/issues/823).
+    function addUrlToCache(url) {
+      window.fetch(url, {
+        mode: 'no-cors'
+      }).then(function(response) {
+        caches.open(CACHE_NAME).then(function(cache) {
+          cache.put(url, response).then(showList);
+        });
+      }).catch(function(error) {
+        setStatus(error);
+      });
+    }
+
+    // Helper method to add a cached Request to the list of the cache contents.
+    function addRequestToList(cacheName, request) {
+      var url = request.url;
+
+      var spanElement = document.createElement('span');
+      spanElement.textContent = url;
+
+      var buttonElement = document.createElement('button');
+      buttonElement.textContent = 'Remove';
+      buttonElement.dataset.url = url;
+      buttonElement.dataset.cacheName = cacheName;
+      buttonElement.addEventListener('click', function() {
+        remove(this.dataset.cacheName, this.dataset.url).then(function() {
+          var parent = this.parentNode;
+          var grandParent = parent.parentNode;
+          grandParent.removeChild(parent);
+        }.bind(this));
+      });
+
+      var liElement = document.createElement('li');
+      liElement.appendChild(spanElement);
+      liElement.appendChild(buttonElement);
+
+      cacheEntriesUl.appendChild(liElement);
+    }
+
+    // Given a cache name and URL, removes the cached entry.
+    function remove(cacheName, url) {
+      return window.caches.open(cacheName).then(function(cache) {
+        return cache.delete(url);
+      });
+    }
+
+    if ('caches' in window) {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js');
+        // As soon as the service worker has been installed, active the UI elements.
+        navigator.serviceWorker.ready.then(initializeUI);
+      }
+    } else {
+      setStatus('window.caches is not supported in your browser.');
+    }
+  </script>
+</body>
+
+</html>

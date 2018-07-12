@@ -31,15 +31,20 @@ self.addEventListener('fetch', function(event) {
 
 function precache() {
   return caches.open(CACHE).then(function(cache) {
+    cache.addAll([
+      '../images/fdr.jpg',
+      '../images/lm.jpg',
+      '../images/qmsht.jpg'
+    ])
     return cache.addAll([
       // './',
       './index.html',
       './controlled.html',
       './non-controlled.html',
       './index.js',
-      '../images/fdr.jpg',
-      '../images/lm.jpg',
-      '../images/qmsht.jpg'
+      // '../images/fdr.jpg',
+      // '../images/lm.jpg',
+      // '../images/qmsht.jpg'
     ]);
   });
 }
