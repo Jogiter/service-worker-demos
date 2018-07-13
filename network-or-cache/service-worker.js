@@ -31,20 +31,13 @@ self.addEventListener('fetch', function(event) {
 
 function precache() {
   return caches.open(CACHE).then(function(cache) {
-    cache.addAll([
-      '../images/fdr.jpg',
-      '../images/lm.jpg',
-      '../images/qmsht.jpg'
-    ])
     return cache.addAll([
-      // './',
+      './', // this is needed if you want it work offline
       './index.html',
       './controlled.html',
       './non-controlled.html',
+      '../images/lm.jpg',
       './index.js',
-      // '../images/fdr.jpg',
-      // '../images/lm.jpg',
-      // '../images/qmsht.jpg'
     ]);
   });
 }
@@ -55,7 +48,7 @@ function fromNetwork(request, timeout) {
     fetch(request).then(function(response) {
       clearTimeout(timeoutId);
       console.log('[fetch] Returning from server: ' + request.url);
-      // precache();
+      // add it to cache
       fulfill(response);
     }, reject);
   });

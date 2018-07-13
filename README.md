@@ -47,6 +47,80 @@
 - (file, *, —)
 - (chrome-extension, *, —)
 
+## 如何使应用离线访问
+
+>添加缓存时，主要不要遗漏 './'，否则页面无法离线工作。
+
+```js
+var CACHE_VERSION = 1;
+var CACHE = 'cache-v' + CACHE_VERSION;
+self.addEventListener('install', function(event) {
+  console.log('The service worker is being installed.');
+  // add to caches
+  event.waitUntil(precache());
+});
+
+self.addEventListener('activate', function(event) {
+  // delete old caches
+  event.waitUntil(
+    caches.keys().then(function(cacheNames) {
+      console.log(cacheNames);
+      return Promise.all(
+        cacheNames.map(function(cacheName) {
+          if (CACHE != cacheName) {
+            console.log('[activate] Deleting out of date cache:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
+
+self.addEventListener('fetch', function(event) {
+  event.respondWith(fromCache(event.request).catch(function() {
+    return fromNetwork(event.request, 400);
+  }));
+});
+
+function precache() {
+  return caches.open(CACHE).then(function(cache) {
+    return cache.addAll([
+      './', // this is needed if you want it work offline
+      './index.html',
+      './controlled.html',
+      './non-controlled.html',
+      '../images/lm.jpg',
+      './index.js',
+    ]);
+  });
+}
+
+function fromNetwork(request, timeout) {
+  return new Promise(function(fulfill, reject) {
+    var timeoutId = setTimeout(reject, timeout);
+    fetch(request).then(function(response) {
+      clearTimeout(timeoutId);
+      console.log('[fetch] Returning from server: ' + request.url);
+      // add it to cache
+      fulfill(response);
+    }, reject);
+  });
+}
+
+function fromCache(request) {
+  return caches.open(CACHE).then(function(cache) {
+    return cache.match(request).then(function(matching) {
+      if (matching) {
+        console.log('[fetch] Returning from ServiceWorker cache: ' + request.url);
+        return matching;
+      }
+      return Promise.reject('no-match');
+    });
+  });
+}
+```
+
 ## 如何更新缓存文件
 
 ```javascript
@@ -92,6 +166,8 @@ self.addEventListener('fetch', function(event) {
 ## 动态更新缓存
 
 [demo](https://googlechrome.github.io/samples/service-worker/window-caches/index.html)
+
+>动态添加部分或者全部缓存，应用都将无法离线访问
 
 ```js
 var CACHE_NAME = 'window-cache-v1';
@@ -150,6 +226,8 @@ iframe {
 </style>
 <iframe src="" frameborder="0" allowfullscreen></iframe>
 ```
+
+## 
 
 ## read-links
 
