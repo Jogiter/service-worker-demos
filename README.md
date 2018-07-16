@@ -227,16 +227,13 @@ iframe {
 <iframe src="" frameborder="0" allowfullscreen></iframe>
 ```
 
-## 
-
 ## read-links
 
 + [Service Worker 简介](https://developers.google.com/web/fundamentals/primers/service-workers/)
 + [ServiceWorker-MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/ServiceWorker#方法)
 + tool: chrome 中访问 `chrome://serviceworker-internals/`
-+ [serviceworke](https://serviceworke.rs/strategy-cache-only_service-worker_doc.html)
 + [Google service-worker samples](https://github.com/GoogleChrome/samples/tree/gh-pages/service-worker). view [samples ](https://googlechrome.github.io/samples/service-worker/)
-+ [deanhume:progressive-web-apps-book](https://github.com/deanhume/progressive-web-apps-book)
-+ [serviceworker-cookbook](https://github.com/mozilla/serviceworker-cookbook)
++ [serviceworker-cookbook](https://github.com/mozilla/serviceworker-cookbook). view [serviceworke](https://serviceworke.rs/strategy-cache-only_service-worker_doc.html) `better than google-doc`
 + [your-first-pwapp](https://codelabs.developers.google.com/codelabs/your-first-pwapp)
++ [deanhume:progressive-web-apps-book](https://github.com/deanhume/progressive-web-apps-book)
 + [push-notifications](https://developers.google.com/web/fundamentals/codelabs/push-notifications/)
